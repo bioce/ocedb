@@ -1,0 +1,55 @@
+state 0 //
+
+    0 $accept: . top
+
+    's'  shift, and goto state 2
+
+    top  goto state 1
+
+state 1 // 's' STRING 'f' STRING 'w' [$end]
+
+    0 $accept: top .  [$end]
+
+    $end  accept
+
+state 2 // 's'
+
+    1 top: 's' . string 'f' string 'w'
+
+    STRING  shift, and goto state 4
+
+    string  goto state 3
+
+state 3 // 's' STRING ['f']
+
+    1 top: 's' string . 'f' string 'w'
+
+    'f'  shift, and goto state 5
+
+state 4 // 's' STRING
+
+    2 string: STRING .  ['f', 'w']
+
+    'f'  reduce using rule 2 (string)
+    'w'  reduce using rule 2 (string)
+
+state 5 // 's' STRING 'f'
+
+    1 top: 's' string 'f' . string 'w'
+
+    STRING  shift, and goto state 4
+
+    string  goto state 6
+
+state 6 // 's' STRING 'f' STRING ['w']
+
+    1 top: 's' string 'f' string . 'w'
+
+    'w'  shift, and goto state 7
+
+state 7 // 's' STRING 'f' STRING 'w'
+
+    1 top: 's' string 'f' string 'w' .  [$end]
+
+    $end  reduce using rule 1 (top)
+

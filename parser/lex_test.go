@@ -29,6 +29,36 @@ var (
 	}
 )
 
+func TestNewLexer(t *testing.T) {
+	sql := "SELECT * from t_name where id = 3"
+	_, e := parser.NewLexer(sql)
+	if e != nil {
+		t.Errorf("NewLexer error sql is: %s %e", sql, e)
+	}
+}
+
+func TestLexer_Next(t *testing.T) {
+	sql := "SELECT * from t_name where id = 3"
+	lex, e := parser.NewLexer(sql)
+	if e != nil {
+		t.Errorf("NewLexer error sql is: %s %e", sql, e)
+	}
+	tok, str, e := lex.Next()
+	if e != nil {
+		t.Errorf("NewLexer.Next error sql is: %s %e", sql, e)
+	}
+	if parser.SELECT != tok {
+		t.Errorf("NewLexer.Next except SELECT get: %d<%s>", tok, str)
+	}
+	tok, str, e = lex.Next()
+	if e != nil {
+		t.Errorf("NewLexer.Next error sql is: %s %e", sql, e)
+	}
+	if parser.FUZZY != tok {
+		t.Errorf("NewLexer.Next except FUZZY get: %d<%s>", tok, str)
+	}
+}
+
 func TestDirect(t *testing.T) {
 	for _, sql := range correctSQL {
 		_, err := parser.Direct(sql)
